@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Cappuccino">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3d8bf"/>
+      <stop offset="100%" stop-color="#efb99a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="36" fill="url(#bg)"/>
+  <ellipse cx="400" cy="390" rx="220" ry="34" fill="#be7d5e" opacity="0.34"/>
+  <rect x="250" y="176" width="300" height="178" rx="35" fill="#fffaf4"/>
+  <ellipse cx="400" cy="176" rx="150" ry="24" fill="#fffaf4"/>
+  <ellipse cx="400" cy="176" rx="116" ry="19" fill="#ba7d59"/>
+  <circle cx="400" cy="172" r="46" fill="#fffefb"/>
+  <circle cx="372" cy="168" r="16" fill="#fffefb"/>
+  <circle cx="428" cy="168" r="16" fill="#fffefb"/>
+  <path d="M553 224h52c28 0 44 16 44 39s-17 39-44 39h-52" fill="none" stroke="#fffaf4" stroke-width="22" stroke-linecap="round"/>
+  <text x="400" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#5f3720">CAPPUCCINO</text>
+</svg>

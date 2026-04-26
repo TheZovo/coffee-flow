@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Coffee Flow</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/theme.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <h1>Coffee Flow</h1>
+    </header>
+
+    <section class="screen active" data-screen="home">
+      <div class="hero-card">
+        <div>
+          <p class="hero-caption">Coffee Flow</p>
+          <h2>Предзаказ кофе и десертов без лишних шагов</h2>
+          <p class="hero-text">Соберите заказ, выберите удобное время в корзине и заберите его по готовности.</p>
+        </div>
+        <div class="hero-balance hero-loyalty-card">
+          <div class="hero-loyalty-head">
+            <span>Лояльность</span>
+            <strong id="heroBonus">0/5</strong>
+          </div>
+          <p id="heroLoyaltyProgram" class="hero-loyalty-program">Каждый 6-й напиток бесплатно</p>
+          <div id="heroLoyaltyTrack" class="hero-loyalty-track" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <section class="section-block">
+        <div class="section-head">
+          <h3>Акции</h3>
+        </div>
+        <div id="bannerList" class="banner-list"></div>
+      </section>
+
+      <section id="menuSection" class="section-block">
+        <div class="panel-card">
+          <div class="panel-block">
+            <span class="panel-label">Поиск по названию</span>
+            <div class="field">
+              <input id="productSearchInput" type="search" maxlength="80" placeholder="Например, капучино" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-head compact">
+          <h3>Меню</h3>
+        </div>
+        <div id="categoryChips" class="chip-row"></div>
+        <div id="productGrid" class="product-grid"></div>
+      </section>
+    </section>
+
+    <section class="screen" data-screen="cart">
+      <div class="cart-header-card">
+        <div>
+          <p class="card-caption">Текущий заказ</p>
+          <h2>Самовывоз</h2>
+          <p class="field-note">Добавьте товары и выберите удобное время</p>
+        </div>
+        <div class="order-type-pill">Самовывоз</div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-block">
+          <span class="panel-label">Когда заберете заказ</span>
+          <p id="cartPickupTimeLabel" class="field-note">Через 5 минут</p>
+          <div id="pickupSlotRow" class="chip-row slot-row"></div>
+          <div class="field">
+            <label for="customTimeInput">Свой вариант</label>
+            <input id="customTimeInput" type="text" maxlength="80" placeholder="Например, к 18:40 или через 25 минут" />
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-block">
+          <span class="panel-label">Формат заказа</span>
+          <div id="consumptionPlaceRow" class="chip-row slot-row">
+            <button class="chip active" type="button" data-consumption-place="takeaway">С собой</button>
+            <button class="chip" type="button" data-consumption-place="dine_in">На месте</button>
+          </div>
+          <p id="consumptionPlaceHint" class="field-note">Эта информация сразу уйдет баристе вместе с заказом.</p>
+        </div>
+      </div>
+
+      <div id="cartItems" class="cart-items"></div>
+
+      <div class="panel-card">
+        <div class="field">
+          <label for="promoInput">Промокод</label>
+          <input id="promoInput" type="text" maxlength="50" placeholder="Например, WELCOME10" />
+        </div>
+        <div id="bonusField" class="field bonus-field">
+          <div class="bonus-field-head">
+            <label for="bonusInput">Списать бонусы, BYN</label>
+            <button id="bonusMaxButton" class="secondary-button bonus-max-button" type="button">Макс</button>
+          </div>
+          <div class="bonus-balance-card">
+            <div>
+              <span class="bonus-balance-label">На бонусном счете</span>
+              <strong id="cartBonusBalance">0.00 BYN</strong>
+            </div>
+          </div>
+          <input id="bonusInput" type="number" min="0" step="0.01" placeholder="0.00" />
+          <p id="bonusBalanceHint" class="field-note">Бонусы появятся после завершения заказов.</p>
+        </div>
+        <div class="field">
+          <label for="noteInput">Комментарий к заказу</label>
+          <textarea id="noteInput" rows="3" maxlength="500" placeholder="Например: без сахара"></textarea>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span>Товары</span>
+          <strong id="summarySubtotal">0.00 BYN</strong>
+        </div>
+        <div id="summaryBonusRow" class="summary-row">
+          <span>Бонусы к списанию</span>
+          <strong id="summaryBonus">0.00 BYN</strong>
+        </div>
+        <div id="summaryLoyaltyRow" class="summary-row hidden">
+          <span>Лояльность</span>
+          <strong id="summaryLoyalty">0.00 BYN</strong>
+        </div>
+        <div class="summary-row total">
+          <span>К оплате</span>
+          <strong id="summaryFinal">0.00 BYN</strong>
+        </div>
+        <p id="loyaltyPreviewHint" class="field-note hidden"></p>
+      </div>
+
+      <button id="checkoutButton" class="primary-button" type="button">Оформить заказ</button>
+      <div id="orderMessage" class="message hidden"></div>
+    </section>
+
+    <section class="screen" data-screen="orders">
+      <div class="section-block">
+        <div class="section-head">
+          <h3>Текущие заказы</h3>
+        </div>
+        <div id="activeOrders" class="order-list"></div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-head">
+          <h3>История</h3>
+          <span class="section-meta">Последние 20 заказов</span>
+        </div>
+        <div id="historyOrders" class="order-list"></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="profile">
+      <div class="profile-card">
+        <div class="profile-avatar" id="profileInitials">CF</div>
+        <div>
+          <h2 id="profileNameLabel">Ваш профиль</h2>
+          <p class="profile-subtitle">Имя для заказа и номер телефона из Telegram</p>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="field">
+          <label for="nameInput">Имя</label>
+          <input id="nameInput" type="text" maxlength="80" placeholder="Как к вам обращаться" />
+        </div>
+        <div class="field">
+          <label>Телефон из Telegram</label>
+          <div id="phoneStatus" class="readonly-field">Телефон еще не подтвержден</div>
+        </div>
+        <button id="requestPhoneButton" class="secondary-button wide-button" type="button">Получить телефон из Telegram</button>
+        <button id="saveProfileButton" class="primary-button" type="button">Сохранить имя</button>
+        <div id="profileMessage" class="message hidden"></div>
+      </div>
+
+      <div class="info-card">
+        <div id="profileBonusRow" class="info-row">
+          <span>Бонусный баланс</span>
+          <strong id="profileBonus">0.00 BYN</strong>
+        </div>
+        <div class="info-row">
+          <span>Telegram</span>
+          <strong id="profileTelegram">@user</strong>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-item active" data-screen="home" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      <span>Главная</span>
+    </button>
+    <button class="nav-item" data-screen="cart" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h14l-1.6 7.2a2 2 0 0 1-2 1.6H10a2 2 0 0 1-2-1.6L6 4H3V2h4zM10 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
+      <span>Корзина</span>
+      <strong id="cartBadge" class="nav-badge hidden">0</strong>
+    </button>
+    <button class="nav-item" data-screen="orders" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm8 1.5V9h4.5"/><path d="M8 12h8v2H8zm0 4h8v2H8z"/></svg>
+      <span>Заказы</span>
+    </button>
+    <button class="nav-item" data-screen="profile" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.2 0-7 2.1-7 5v1h14v-1c0-2.9-2.8-5-7-5z"/></svg>
+      <span>Профиль</span>
+    </button>
+  </nav>
+
+  <div id="customizeModal" class="modal hidden">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <h3 id="customizeTitle">Выберите вариант</h3>
+        <button id="closeCustomizeButton" class="icon-button" type="button">×</button>
+      </div>
+      <p id="customizePrice" class="modal-price">0.00 BYN</p>
+      <div class="field" id="sizeOptionsWrap">
+        <label>Размер</label>
+        <div id="sizeOptions" class="option-grid"></div>
+      </div>
+      <div class="field" id="addonOptionsWrap">
+        <label>Добавки</label>
+        <div id="addonOptions" class="option-grid option-grid-addons"></div>
+      </div>
+      <button id="addConfiguredProductButton" class="primary-button" type="button">Добавить в корзину</button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

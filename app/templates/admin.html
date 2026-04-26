@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coffee Flow Admin</title>
+  <link rel="stylesheet" href="/static/admin.css" />
+  <link rel="stylesheet" href="/static/theme-admin.css" />
+</head>
+<body class="admin-page">
+  <main class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Coffee Flow Admin</p>
+        <h1>Панель управления каталогом, баннерами и ботом</h1>
+        <p class="hero-copy">
+          Здесь можно управлять витриной, программами лояльности, бонусами и всеми текстами ботов.
+          Изображения загружаются файлом, а цены в панели указываются в BYN.
+        </p>
+      </div>
+      <div class="hero-chip-list">
+        <span class="hero-chip">Каталог</span>
+        <span class="hero-chip">Баннеры</span>
+        <span class="hero-chip">Лояльность</span>
+        <span class="hero-chip">Команда</span>
+        <span class="hero-chip">Тексты бота</span>
+      </div>
+    </header>
+
+    <section id="authCard" class="panel auth-panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-kicker">Вход</p>
+          <h2>Доступ в админ-панель</h2>
+        </div>
+      </div>
+      <form id="loginForm" class="stack-form">
+        <label class="field">
+          <span>Секрет бариста</span>
+          <input id="secretInput" type="password" autocomplete="current-password" placeholder="Введите BARISTA_SECRET" minlength="3" required />
+        </label>
+        <button class="primary-button" type="submit">Войти в админку</button>
+        <div id="authMessage" class="message hidden"></div>
+      </form>
+    </section>
+
+    <section id="dashboard" class="dashboard hidden">
+      <div class="summary-row">
+        <article class="summary-card">
+          <span>Категорий</span>
+          <strong id="categoryCount">0</strong>
+        </article>
+        <article class="summary-card">
+          <span>Товаров</span>
+          <strong id="productCount">0</strong>
+        </article>
+        <article class="summary-card">
+          <span>Баннеров</span>
+          <strong id="bannerCount">0</strong>
+        </article>
+        <article class="summary-card">
+          <span>Активных товаров</span>
+          <strong id="activeProductCount">0</strong>
+        </article>
+      </div>
+
+      <div class="toolbar panel">
+        <div>
+          <p class="panel-kicker">Управление</p>
+          <h2>Каталог, витрина, программы и сценарии бота</h2>
+        </div>
+        <div class="toolbar-actions">
+          <button id="logoutButton" class="ghost-button" type="button">Выйти</button>
+        </div>
+      </div>
+
+      <div id="dashboardMessage" class="message hidden"></div>
+
+      <div class="tab-strip panel">
+        <button class="tab-button" type="button" data-admin-tab="reminders">Напоминалки</button>
+        <button class="tab-button" type="button" data-admin-tab="analytics">Аналитика</button>
+      </div>
+
+      <div class="tab-strip panel">
+        <button class="tab-button active" type="button" data-admin-tab="programs">Программы</button>
+        <button class="tab-button" type="button" data-admin-tab="storefront">Витрина</button>
+        <button class="tab-button" type="button" data-admin-tab="catalog">Каталог</button>
+        <button class="tab-button" type="button" data-admin-tab="team">Команда</button>
+        <button class="tab-button" type="button" data-admin-tab="bot">Бот</button>
+      </div>
+
+      <section class="admin-tab-panel active" data-admin-panel="programs">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Программы</p>
+              <h3>Лояльность и бонусы</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Настраивайте механику бесплатных напитков и бонусной системы отдельно, не смешивая разные правила в одном экране.
+          </p>
+
+          <div class="subtab-strip">
+            <button class="subtab-button active" type="button" data-admin-subtab-group="programs" data-admin-subtab="loyalty">Лояльность</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="programs" data-admin-subtab="bonus">Бонусы</button>
+          </div>
+
+          <form id="loyaltyForm" class="stack-form admin-form-shell">
+            <section class="admin-subtab-panel active" data-admin-subpanel-group="programs" data-admin-subpanel="loyalty">
+              <div class="content-grid content-grid-single">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Логика лояльности</h4>
+                    <p>Определяет, для каких напитков действует бесплатная позиция и как быстро клиент до нее доходит.</p>
+                  </div>
+                  <div class="product-form-grid compact-form-grid">
+                    <div class="field field-span-2">
+                      <span>Категории для лояльности</span>
+                      <div id="loyaltyCategoryOptions" class="selection-list"></div>
+                      <p class="config-note">Выберите одну или несколько категорий. Все отмеченные категории участвуют в общей программе лояльности.</p>
+                    </div>
+                    <label class="field">
+                      <span>Платных товаров до бесплатного</span>
+                      <input id="loyaltyPaidItemsPerReward" type="number" min="1" max="100" step="1" value="5" />
+                    </label>
+                    <div class="field field-span-2">
+                      <p id="loyaltyPreviewText" class="config-note">Каждый 6-й товар бесплатно. Бонусы начисляются по завершению заказа.</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="programs" data-admin-subpanel="bonus">
+              <div class="content-grid content-grid-single">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Правила бонусов</h4>
+                    <p>Управляет начислением и списанием бонусов в корзине и в завершенных заказах.</p>
+                  </div>
+                  <div class="product-form-grid compact-form-grid">
+                    <label class="toggle-field">
+                      <input id="bonusEnabled" type="checkbox" checked />
+                      <span>Начислять бонусы после завершения заказа</span>
+                    </label>
+                    <label class="field">
+                      <span>Начисление бонусов, %</span>
+                      <input id="bonusEarnPercent" type="number" min="0" max="100" step="1" value="5" />
+                    </label>
+                    <label class="toggle-field field-span-2">
+                      <input id="bonusRedeemEnabled" type="checkbox" checked />
+                      <span>Разрешить списание бонусов при оформлении заказа</span>
+                    </label>
+                  </div>
+                </section>
+              </div>
+            </section>
+
+            <label class="field">
+              <span>Максимум оплаты бонусами, %</span>
+              <input id="bonusRedeemMaxPercent" type="number" min="0" max="100" step="1" value="100" />
+            </label>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Сохранить настройки</button>
+              <button id="resetLoyaltyButton" class="ghost-button" type="button">Сбросить</button>
+            </div>
+            <div id="loyaltyMessage" class="message hidden"></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="storefront">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Витрина</p>
+              <h3>Баннеры и промо-блоки</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Управляйте визуальными акцентами главной страницы отдельно от каталога и внутренних текстов бота.
+          </p>
+
+          <div class="subtab-strip">
+            <button class="subtab-button active" type="button" data-admin-subtab-group="storefront" data-admin-subtab="banners">Баннеры</button>
+          </div>
+
+          <section class="admin-subtab-panel active" data-admin-subpanel-group="storefront" data-admin-subpanel="banners">
+            <div class="dashboard-grid workspace-grid">
+              <section class="content-card workspace-card">
+                <div class="panel-head">
+                  <div>
+                    <p class="panel-kicker">Список</p>
+                    <h4>Активные и архивные баннеры</h4>
+                  </div>
+                  <button id="newBannerButton" class="secondary-button" type="button">Новый баннер</button>
+                </div>
+                <div id="bannerList" class="banner-admin-list"></div>
+              </section>
+
+              <section class="content-card workspace-card">
+                <div class="content-card-head">
+                  <h4>Редактор баннера</h4>
+                  <p>Меняйте заголовок, изображение, CTA и порядок показа без выхода из раздела витрины.</p>
+                </div>
+
+                <form id="bannerForm" class="product-form-grid compact-form-grid">
+                  <input id="bannerId" type="hidden" />
+                  <input id="bannerImageUrl" type="hidden" />
+
+                  <label class="field">
+                    <span>Заголовок</span>
+                    <input id="bannerTitle" type="text" maxlength="255" placeholder="Капучино недели" required />
+                  </label>
+                  <label class="field">
+                    <span>Подзаголовок</span>
+                    <input id="bannerSubtitle" type="text" maxlength="255" placeholder="-20% по промокоду CAP20" />
+                  </label>
+                  <label class="field">
+                    <span>Текст кнопки</span>
+                    <input id="bannerCtaLabel" type="text" maxlength="120" placeholder="Выбрать напиток" />
+                  </label>
+                    <label class="field">
+                      <span>Порядок сортировки</span>
+                      <input id="bannerSortOrder" type="number" min="0" max="10000" step="1" value="100" />
+                    </label>
+                  <label class="field field-span-2">
+                    <span>Описание</span>
+                    <textarea id="bannerDescription" rows="3" maxlength="4000" placeholder="Короткое описание акции"></textarea>
+                  </label>
+                  <div class="field field-span-2">
+                    <span>Изображение баннера</span>
+                    <label class="upload-field" for="bannerImageFile">
+                      <input id="bannerImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif" />
+                      <strong>Выбрать файл</strong>
+                      <small>PNG, JPG, WEBP, SVG или GIF до 5 МБ</small>
+                    </label>
+                    <div class="upload-actions">
+                      <div id="bannerImagePath" class="upload-path">Файл не выбран</div>
+                      <button id="clearBannerImageButton" class="ghost-button" type="button">Убрать изображение</button>
+                    </div>
+                    <img id="bannerImagePreview" class="upload-preview hidden" alt="Превью баннера" />
+                  </div>
+                  <div class="field field-span-2 toggles-grid">
+                    <label class="toggle-field">
+                      <input id="bannerIsActive" type="checkbox" checked />
+                      <span>Баннер активен</span>
+                    </label>
+                  </div>
+                  <div class="form-actions field-span-2">
+                    <button class="primary-button" type="submit">Сохранить баннер</button>
+                    <button id="resetBannerButton" class="ghost-button" type="button">Сбросить</button>
+                  </div>
+                  <div id="bannerMessage" class="message hidden field-span-2"></div>
+                </form>
+              </section>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="catalog">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Каталог</p>
+              <h3>Категории, товары и опции</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Разделяйте структуру меню и карточки товаров, чтобы править справочники и реальные позиции без визуальной перегрузки.
+          </p>
+
+          <div class="subtab-strip">
+            <button class="subtab-button active" type="button" data-admin-subtab-group="catalog" data-admin-subtab="categories">Категории</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="catalog" data-admin-subtab="products">Товары</button>
+          </div>
+
+          <section class="admin-subtab-panel active" data-admin-subpanel-group="catalog" data-admin-subpanel="categories">
+            <div class="dashboard-grid workspace-grid">
+              <section class="content-card workspace-card">
+                <div class="panel-head">
+                  <div>
+                    <p class="panel-kicker">Список</p>
+                    <h4>Разделы каталога</h4>
+                  </div>
+                  <button id="newCategoryButton" class="secondary-button" type="button">Новая категория</button>
+                </div>
+                <div id="categoryList" class="entity-list"></div>
+              </section>
+
+              <section class="content-card workspace-card">
+                <div class="content-card-head">
+                  <h4>Редактор категории</h4>
+                  <p>Настраивает структуру меню, порядок вывода и активность разделов.</p>
+                </div>
+
+                <form id="categoryForm" class="stack-form">
+                  <input id="categoryId" type="hidden" />
+                  <label class="field">
+                    <span>Название категории</span>
+                    <input id="categoryName" type="text" maxlength="120" placeholder="Например, Кофе" required />
+                  </label>
+                  <label class="field">
+                    <span>Slug</span>
+                    <input id="categorySlug" type="text" maxlength="80" placeholder="coffee" required />
+                  </label>
+                  <label class="field">
+                    <span>Порядок сортировки</span>
+                    <input id="categorySortOrder" type="number" min="0" max="10000" step="1" value="100" />
+                  </label>
+                  <label class="toggle-field">
+                    <input id="categoryIsActive" type="checkbox" checked />
+                    <span>Категория активна</span>
+                  </label>
+                  <div class="form-actions">
+                    <button class="primary-button" type="submit">Сохранить категорию</button>
+                    <button id="resetCategoryButton" class="ghost-button" type="button">Сбросить</button>
+                  </div>
+                  <div id="categoryMessage" class="message hidden"></div>
+                </form>
+              </section>
+            </div>
+          </section>
+
+          <section class="admin-subtab-panel" data-admin-subpanel-group="catalog" data-admin-subpanel="products">
+            <div class="dashboard-grid workspace-grid workspace-grid-wide">
+              <section class="content-card workspace-card">
+                <div class="panel-head">
+                  <div>
+                    <p class="panel-kicker">Список</p>
+                    <h4>Товары, размеры и добавки</h4>
+                  </div>
+                  <div class="toolbar-inline">
+                    <label class="field compact-field">
+                      <span>Фильтр по категории</span>
+                      <select id="productFilterCategory"></select>
+                    </label>
+                    <button id="newProductButton" class="secondary-button" type="button">Новый товар</button>
+                  </div>
+                </div>
+                <div id="productList" class="product-list"></div>
+              </section>
+
+              <section class="content-card workspace-card">
+                <div class="content-card-head">
+                  <h4>Редактор товара</h4>
+                  <p>Карточка товара, изображение, размеры, добавки и порядок показа на витрине.</p>
+                </div>
+
+                <form id="productForm" class="product-form-grid compact-form-grid">
+                  <input id="productId" type="hidden" />
+                  <input id="productImageUrl" type="hidden" />
+
+                  <label class="field">
+                    <span>Категория</span>
+                    <select id="productCategory"></select>
+                  </label>
+                  <label class="field">
+                    <span>Тип продукции</span>
+                    <input id="productType" type="text" maxlength="80" placeholder="coffee" required />
+                  </label>
+                  <label class="field">
+                    <span>Название</span>
+                    <input id="productName" type="text" maxlength="255" placeholder="Капучино" required />
+                  </label>
+                  <label class="field">
+                    <span>Бейдж</span>
+                    <input id="productBadge" type="text" maxlength="60" placeholder="Хит" />
+                  </label>
+                  <label class="field">
+                    <span>Порядок сортировки</span>
+                    <input id="productSortOrder" type="number" min="0" max="10000" step="1" value="100" />
+                  </label>
+                  <div class="field field-span-2">
+                    <span>Изображение товара</span>
+                    <label class="upload-field" for="productImageFile">
+                      <input id="productImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif" />
+                      <strong>Выбрать файл</strong>
+                      <small>PNG, JPG, WEBP, SVG или GIF до 5 МБ</small>
+                    </label>
+                    <div class="upload-actions">
+                      <div id="productImagePath" class="upload-path">Файл не выбран</div>
+                      <button id="clearProductImageButton" class="ghost-button" type="button">Убрать изображение</button>
+                    </div>
+                    <img id="productImagePreview" class="upload-preview hidden" alt="Превью изображения товара" />
+                  </div>
+                  <label class="field field-span-2">
+                    <span>Описание</span>
+                    <textarea id="productDescription" rows="3" maxlength="2000" placeholder="Краткое описание товара"></textarea>
+                  </label>
+                  <label class="field field-span-2">
+                    <span>Состав</span>
+                    <textarea id="productComposition" rows="3" maxlength="2000" placeholder="Эспрессо, молоко, сироп..."></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Калорийность, ккал</span>
+                    <input id="productCaloriesKcal" type="number" min="0" max="10000" step="1" placeholder="180" />
+                  </label>
+                  <div class="field field-span-2">
+                    <div class="config-head">
+                      <span>Размеры и объем</span>
+                      <button id="addSizeButton" class="secondary-button" type="button">Добавить размер</button>
+                    </div>
+                    <div id="productSizeOptions" class="config-list"></div>
+                    <p class="config-note">Цена задается внутри размеров в BYN. Добавьте хотя бы один размер.</p>
+                  </div>
+                  <div class="field field-span-2">
+                    <div class="config-head">
+                      <span>Добавки</span>
+                      <button id="addAddonButton" class="secondary-button" type="button">Добавить добавку</button>
+                    </div>
+                    <div id="productAddonOptions" class="config-list"></div>
+                    <p class="config-note">Например: сиропы, альтернативное молоко, топпинги. Цены указываются в BYN.</p>
+                  </div>
+                  <div class="field field-span-2 toggles-grid">
+                    <label class="toggle-field">
+                      <input id="productIsActive" type="checkbox" checked />
+                      <span>Товар активен</span>
+                    </label>
+                  </div>
+                  <div class="form-actions field-span-2">
+                    <button class="primary-button" type="submit">Сохранить товар</button>
+                    <button id="resetProductButton" class="ghost-button" type="button">Сбросить</button>
+                  </div>
+                  <div id="productMessage" class="message hidden field-span-2"></div>
+                </form>
+              </section>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="team">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Команда</p>
+              <h3>Баристы и смены</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Добавляйте барист в команду, назначайте им окна доступа и управляйте сменами так, чтобы бот был доступен только в рабочее время.
+          </p>
+
+          <div class="subtab-strip">
+            <button class="subtab-button active" type="button" data-admin-subtab-group="team" data-admin-subtab="baristas">Баристы</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="team" data-admin-subtab="shifts">Смены</button>
+          </div>
+
+          <section class="admin-subtab-panel active" data-admin-subpanel-group="team" data-admin-subpanel="baristas">
+            <div class="dashboard-grid workspace-grid">
+              <section class="content-card workspace-card">
+                <div class="panel-head">
+                  <div>
+                    <p class="panel-kicker">Команда</p>
+                    <h4>Список барист</h4>
+                  </div>
+                  <button id="newBaristaButton" class="secondary-button" type="button">Новый бариста</button>
+                </div>
+                <div id="baristaList" class="entity-list"></div>
+              </section>
+
+              <section class="content-card workspace-card">
+                <div class="content-card-head">
+                  <h4>Карточка бариста</h4>
+                  <p>Здесь задается, кто может получать смены и работать в бариста-боте. Telegram ID больше не нужен: запись привяжется автоматически при первом входе баристы в бот по username, а если его нет, по точному имени.</p>
+                </div>
+
+                <form id="baristaForm" class="product-form-grid compact-form-grid">
+                  <input id="baristaId" type="hidden" />
+                  <label class="field">
+                    <span>Имя бариста</span>
+                    <input id="baristaFullName" type="text" maxlength="255" placeholder="Например, Анна Петрова" required />
+                  </label>
+                  <label class="field">
+                    <span>Username в Telegram</span>
+                    <input id="baristaUsername" type="text" maxlength="255" placeholder="anna_barista" />
+                  </label>
+                  <label class="toggle-field field-span-2">
+                    <input id="baristaIsActive" type="checkbox" checked />
+                    <span>Бариста активен и может получать смены</span>
+                  </label>
+                  <div class="field field-span-2">
+                    <p class="config-note">Username лучше указать, тогда привязка пройдет автоматически и без ошибок. Если username не заполнен, бот попробует привязать баристу по точному совпадению имени при первом входе.</p>
+                  </div>
+                  <div class="field field-span-2">
+                    <p class="config-note">Если бариста выключен, он остается в списке, но больше не сможет работать с заказами, пока вы снова не включите доступ.</p>
+                  </div>
+                  <div class="form-actions field-span-2">
+                    <button class="primary-button" type="submit">Сохранить бариста</button>
+                    <button id="resetBaristaButton" class="ghost-button" type="button">Сбросить</button>
+                  </div>
+                  <div id="baristaMessage" class="message hidden field-span-2"></div>
+                </form>
+              </section>
+            </div>
+          </section>
+
+          <section class="admin-subtab-panel" data-admin-subpanel-group="team" data-admin-subpanel="shifts">
+            <div class="dashboard-grid workspace-grid">
+              <section class="content-card workspace-card">
+                <div class="panel-head">
+                  <div>
+                    <p class="panel-kicker">График</p>
+                    <h4>Смены барист</h4>
+                  </div>
+                  <button id="newShiftButton" class="secondary-button" type="button">Новая смена</button>
+                </div>
+                <div id="shiftList" class="entity-list"></div>
+              </section>
+
+              <section class="content-card workspace-card">
+                <div class="content-card-head">
+                  <h4>Редактор смены</h4>
+                  <p>Укажите точное начало и конец смены. Доступ к бариста-боту будет открыт только в этом интервале.</p>
+                </div>
+
+                <form id="shiftForm" class="product-form-grid compact-form-grid">
+                  <input id="shiftId" type="hidden" />
+                  <label class="field">
+                    <span>Бариста</span>
+                    <select id="shiftBaristaId" required></select>
+                  </label>
+                  <label class="field">
+                    <span>Начало смены</span>
+                    <select id="shiftWeekday" required>
+                      <option value="0">Понедельник</option>
+                      <option value="1">Вторник</option>
+                      <option value="2">Среда</option>
+                      <option value="3">Четверг</option>
+                      <option value="4">Пятница</option>
+                      <option value="5">Суббота</option>
+                      <option value="6">Воскресенье</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>Конец смены</span>
+                    <input id="shiftStartTime" type="time" required />
+                  </label>
+                  <label class="field">
+                    <span>Конец смены</span>
+                    <input id="shiftEndTime" type="time" required />
+                  </label>
+                  <label class="field field-span-2">
+                    <span>Комментарий</span>
+                    <input id="shiftNote" type="text" maxlength="255" placeholder="Например, утренняя смена" />
+                  </label>
+                  <label class="toggle-field field-span-2">
+                    <input id="shiftIsActive" type="checkbox" checked />
+                    <span>Смена активна</span>
+                  </label>
+                  <div class="field field-span-2">
+                    <p class="config-note">Время сохраняется с учетом локальной таймзоны приложения. Пересекающиеся активные смены для одного бариста не допускаются.</p>
+                  </div>
+                  <div class="form-actions field-span-2">
+                    <button class="primary-button" type="submit">Сохранить смену</button>
+                    <button id="resetShiftButton" class="ghost-button" type="button">Сбросить</button>
+                  </div>
+                  <div id="shiftMessage" class="message hidden field-span-2"></div>
+                </form>
+              </section>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="reminders">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Напоминалки</p>
+              <h3>Возврат неактивных клиентов</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Настройте автоматическое сообщение тем пользователям, которые давно не оформляли заказы через бота.
+          </p>
+
+          <form id="reminderForm" class="stack-form admin-form-shell">
+            <div class="content-grid content-grid-single">
+              <section class="content-card">
+                <div class="product-form-grid compact-form-grid">
+                  <label class="toggle-field field-span-2">
+                    <input id="reminderEnabled" type="checkbox" />
+                    <span>Включить автоматические напоминания</span>
+                  </label>
+                  <label class="field">
+                    <span>Неактивен, дней</span>
+                    <input id="reminderDays" type="number" min="1" max="3650" step="1" value="30" />
+                  </label>
+                  <label class="field">
+                    <span>Время отправки</span>
+                    <input id="reminderSendTime" type="time" value="12:00" />
+                  </label>
+                  <label class="field field-span-2">
+                    <span>Текст напоминания</span>
+                    <textarea id="reminderText" rows="5" maxlength="4000" placeholder="Например: Мы давно вас не видели. Загляните за любимым кофе."></textarea>
+                  </label>
+                  <div class="field field-span-2">
+                    <p id="reminderPreview" class="config-note">Напоминания выключены.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Сохранить напоминалки</button>
+            </div>
+            <div id="reminderMessage" class="message hidden"></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="analytics">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Аналитика</p>
+              <h3>Статистика по заказам</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Смотрите ключевые метрики прямо в панели и выгружайте данные в CSV или Excel.
+          </p>
+
+          <div class="content-grid content-grid-single">
+            <section class="content-card">
+              <div class="toolbar-inline">
+                <div class="toolbar-inline">
+                  <button class="secondary-button" type="button" data-analytics-range="today">Сегодня</button>
+                  <button class="secondary-button" type="button" data-analytics-range="7">7 дней</button>
+                  <button class="secondary-button" type="button" data-analytics-range="30">30 дней</button>
+                </div>
+                <div class="toolbar-inline">
+                  <label class="field compact-field">
+                    <span>С</span>
+                    <input id="analyticsDateFrom" type="date" />
+                  </label>
+                  <label class="field compact-field">
+                    <span>По</span>
+                    <input id="analyticsDateTo" type="date" />
+                  </label>
+                  <button id="analyticsLoadButton" class="primary-button" type="button">Показать</button>
+                  <button id="analyticsExportCsvButton" class="ghost-button" type="button">CSV</button>
+                  <button id="analyticsExportXlsxButton" class="ghost-button" type="button">Excel</button>
+                </div>
+              </div>
+              <div id="analyticsMessage" class="message hidden"></div>
+            </section>
+          </div>
+
+          <div id="analyticsKpis" class="summary-row"></div>
+
+          <div class="content-grid">
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Топ товаров</h4>
+              </div>
+              <div id="analyticsTopProducts" class="entity-list"></div>
+            </section>
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Топ категорий</h4>
+              </div>
+              <div id="analyticsTopCategories" class="entity-list"></div>
+            </section>
+          </div>
+
+          <div class="content-grid">
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Промокоды</h4>
+              </div>
+              <div id="analyticsPromoUsage" class="entity-list"></div>
+            </section>
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Статусы заказов</h4>
+              </div>
+              <div id="analyticsStatusBreakdown" class="entity-list"></div>
+            </section>
+          </div>
+
+          <div class="content-grid">
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Заказы по часам</h4>
+              </div>
+              <div id="analyticsHourlyBreakdown" class="entity-list"></div>
+            </section>
+            <section class="content-card">
+              <div class="content-card-head">
+                <h4>Выручка по дням</h4>
+              </div>
+              <div id="analyticsDailyRevenue" class="entity-list"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-tab-panel" data-admin-panel="bot">
+        <div class="panel admin-section-shell">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Бот</p>
+              <h3>Сценарии клиента и бариста</h3>
+            </div>
+          </div>
+          <p class="section-copy">
+            Все тексты и подписи разбиты по реальным сценариям использования, чтобы менеджер мог быстро найти нужный участок диалога.
+          </p>
+
+          <div class="subtab-strip">
+            <button class="subtab-button active" type="button" data-admin-subtab-group="bot" data-admin-subtab="start">Старт</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="bot" data-admin-subtab="contacts">Контакты</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="bot" data-admin-subtab="ordering">Оформление</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="bot" data-admin-subtab="customer-statuses">Статусы клиента</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="bot" data-admin-subtab="barista">Бариста</button>
+            <button class="subtab-button" type="button" data-admin-subtab-group="bot" data-admin-subtab="order-templates">Шаблоны заказа</button>
+          </div>
+
+          <form id="appSettingsForm" class="stack-form admin-form-shell">
+            <section class="admin-subtab-panel active" data-admin-subpanel-group="bot" data-admin-subpanel="start">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Первый экран клиента</h4>
+                    <p>Кнопка запуска Mini App, стартовое сообщение и справка.</p>
+                  </div>
+                  <label class="field">
+                    <span>Текст кнопки Mini App</span>
+                    <input name="miniapp_button_text" type="text" maxlength="120" />
+                  </label>
+                  <label class="field">
+                    <span>Приветственное сообщение</span>
+                    <textarea name="customer_start_text" rows="4" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Сообщение команды /app</span>
+                    <textarea name="customer_app_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Сообщение команды /help</span>
+                    <textarea name="customer_help_text" rows="4" maxlength="4000"></textarea>
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="bot" data-admin-subpanel="contacts">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Подтверждение телефона</h4>
+                    <p>Все тексты, которые клиент видит при запросе номера и после его сохранения.</p>
+                  </div>
+                  <label class="field">
+                    <span>Запрос номера телефона</span>
+                    <textarea name="customer_contact_request_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Ошибка чтения телефона</span>
+                    <textarea name="customer_phone_error_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Телефон сохранен</span>
+                    <textarea name="customer_phone_saved_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="bot" data-admin-subpanel="ordering">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Создание заказа</h4>
+                    <p>Текст первого подтверждения после оформления заказа и общая логика времени самовывоза.</p>
+                  </div>
+                  <label class="field">
+                    <span>Заказ создан</span>
+                    <textarea name="customer_order_created_text" rows="4" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Самовывоз как можно скорее</span>
+                    <input name="pickup_asap_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись “самовывоз”</span>
+                    <input name="order_type_pickup_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись “доставка”</span>
+                    <input name="order_type_delivery_label" type="text" maxlength="255" />
+                  </label>
+                </section>
+
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Подписи и fallback-значения</h4>
+                    <p>Используются в карточках заказа, сообщениях и fallback-сценариях, когда каких-то данных нет.</p>
+                  </div>
+                  <label class="field">
+                    <span>Имя по умолчанию</span>
+                    <input name="order_contact_name_fallback" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Телефон по умолчанию</span>
+                    <input name="order_contact_phone_fallback" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Пустой список товаров</span>
+                    <input name="order_empty_items_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись промо</span>
+                    <input name="order_promo_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись лояльности</span>
+                    <input name="order_loyalty_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись списания бонусов</span>
+                    <input name="order_bonus_spent_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись начисления бонусов</span>
+                    <input name="order_bonus_earned_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись комментария</span>
+                    <input name="order_note_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись адреса</span>
+                    <input name="order_delivery_address_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Подпись комментария к доставке</span>
+                    <input name="order_delivery_comment_label" type="text" maxlength="255" />
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="bot" data-admin-subpanel="customer-statuses">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Сообщения по статусам</h4>
+                    <p>Плейсхолдеры: <code>{order_number}</code>, <code>{pickup_label}</code>, <code>{final_total}</code>, <code>{bonus_earned}</code>.</p>
+                  </div>
+                  <label class="field">
+                    <span>Статус “в работе”</span>
+                    <textarea name="customer_status_in_progress_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Статус “готов”</span>
+                    <textarea name="customer_status_ready_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Статус “в пути”</span>
+                    <textarea name="customer_status_en_route_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Статус “завершен”</span>
+                    <textarea name="customer_status_completed_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Статус “отменен”</span>
+                    <textarea name="customer_status_cancelled_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                </section>
+
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Короткие названия статусов</h4>
+                    <p>Используются в карточках заказов, служебных уведомлениях и административных шаблонах.</p>
+                  </div>
+                  <label class="field">
+                    <span>Статус “новый”</span>
+                    <input name="order_status_new_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Статус “в работе”</span>
+                    <input name="order_status_in_progress_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Статус “готов”</span>
+                    <input name="order_status_ready_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Статус “в пути”</span>
+                    <input name="order_status_en_route_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Статус “завершен”</span>
+                    <input name="order_status_completed_label" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Статус “отменен”</span>
+                    <input name="order_status_cancelled_label" type="text" maxlength="255" />
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="bot" data-admin-subpanel="barista">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Команды и доступ</h4>
+                    <p>Вход, приветствие и основные команды бариста-бота.</p>
+                  </div>
+                  <label class="field">
+                    <span>Приветственное сообщение</span>
+                    <textarea name="barista_start_text" rows="5" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Лишние аргументы /login</span>
+                    <textarea name="barista_login_invalid_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Подтверждение смены</span>
+                    <textarea name="barista_login_success_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Выход</span>
+                    <textarea name="barista_logout_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Нет доступа</span>
+                    <textarea name="barista_access_denied_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Подсказка команды /order</span>
+                    <textarea name="barista_order_usage_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                </section>
+
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Операционные ответы</h4>
+                    <p>Очередь, статистика, ошибки и служебные тексты, связанные с обработкой заказов.</p>
+                  </div>
+                  <label class="field">
+                    <span>Очередь пустая</span>
+                    <textarea name="barista_queue_empty_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Итог по очереди</span>
+                    <textarea name="barista_queue_summary_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Заказ не найден</span>
+                    <textarea name="barista_order_not_found_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Сегодня заказов нет</span>
+                    <textarea name="barista_today_empty_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Итог по дню</span>
+                    <textarea name="barista_today_summary_text" rows="5" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Пользователь не найден</span>
+                    <textarea name="barista_user_not_found_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Некорректный ID заказа</span>
+                    <textarea name="barista_invalid_order_id_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Неизвестное действие</span>
+                    <textarea name="barista_unknown_action_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Заказ уже закрыт</span>
+                    <textarea name="barista_order_closed_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Статус только для доставки</span>
+                    <textarea name="barista_delivery_only_status_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Ошибка повторной загрузки заказа</span>
+                    <textarea name="barista_order_reload_error_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Сообщение об обновлении статуса</span>
+                    <textarea name="barista_status_updated_text" rows="3" maxlength="4000"></textarea>
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <section class="admin-subtab-panel" data-admin-subpanel-group="bot" data-admin-subpanel="order-templates">
+              <div class="content-grid">
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Шаблоны заказов</h4>
+                    <p>
+                      Плейсхолдеры: <code>{order_number}</code>, <code>{status_label}</code>, <code>{order_type_label}</code>,
+                      <code>{contact_name}</code>, <code>{contact_phone}</code>, <code>{pickup_label}</code>, <code>{items_list}</code>,
+                      <code>{total}</code>, <code>{discount_total}</code>, <code>{final_total}</code>, <code>{promo_line}</code>,
+                      <code>{loyalty_line}</code>, <code>{bonus_spent_line}</code>, <code>{bonus_earned_line}</code>, <code>{note_line}</code>.
+                    </p>
+                  </div>
+                  <label class="field">
+                    <span>Карточка заказа в бариста-боте</span>
+                    <textarea name="barista_order_card_text" rows="10" maxlength="8000"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Уведомление о новом заказе</span>
+                    <textarea name="barista_new_order_text" rows="8" maxlength="8000"></textarea>
+                  </label>
+                </section>
+
+                <section class="content-card">
+                  <div class="content-card-head">
+                    <h4>Кнопки действий бариста</h4>
+                    <p>Подписи inline-кнопок, которые бариста использует при смене статусов заказа.</p>
+                  </div>
+                  <label class="field">
+                    <span>Кнопка “в работу”</span>
+                    <input name="barista_action_take_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Кнопка “готов”</span>
+                    <input name="barista_action_ready_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Кнопка “в пути”</span>
+                    <input name="barista_action_route_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Кнопка “выдан”</span>
+                    <input name="barista_action_done_text" type="text" maxlength="255" />
+                  </label>
+                  <label class="field">
+                    <span>Кнопка “отменить”</span>
+                    <input name="barista_action_cancel_text" type="text" maxlength="255" />
+                  </label>
+                </section>
+              </div>
+            </section>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Сохранить тексты бота</button>
+              <button id="resetAppSettingsButton" class="ghost-button" type="button">Сбросить</button>
+            </div>
+            <div id="appSettingsMessage" class="message hidden"></div>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/static/admin.js"></script>
+</body>
+</html>

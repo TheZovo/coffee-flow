@@ -1,0 +1,275 @@
+@font-face {
+  font-family: "Eastman";
+  src:
+    local("Eastman"),
+    local("Eastman Grotesque"),
+    url("/static/fonts/Eastman-Regular.otf") format("opentype"),
+    url("/static/fonts/Eastman-Regular.woff2") format("woff2"),
+    url("/static/fonts/Eastman-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range:
+    U+0041-005A,
+    U+0061-007A,
+    U+00C0-00FF,
+    U+0100-024F;
+}
+
+@font-face {
+  font-family: "Eastman";
+  src:
+    local("Eastman"),
+    local("Eastman Grotesque"),
+    url("/static/fonts/Eastman-Medium.otf") format("opentype"),
+    url("/static/fonts/Eastman-Medium.woff2") format("woff2"),
+    url("/static/fonts/Eastman-Medium.woff") format("woff");
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  unicode-range:
+    U+0041-005A,
+    U+0061-007A,
+    U+00C0-00FF,
+    U+0100-024F;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src:
+    local("Playfair Display"),
+    url("/static/fonts/PlayfairDisplay-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src:
+    local("Playfair Display SemiBold"),
+    local("Playfair Display"),
+    url("/static/fonts/PlayfairDisplay-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+}
+
+:root {
+  --bg: #ffedf6;
+  --bg-accent: #ffd9eb;
+  --panel: rgba(255, 250, 253, 0.88);
+  --panel-strong: rgba(255, 253, 254, 0.96);
+  --text: #400c19;
+  --muted: rgba(64, 12, 25, 0.7);
+  --line: rgba(64, 12, 25, 0.12);
+  --primary: #8d2847;
+  --primary-strong: #400c19;
+  --success: #7f1d3a;
+  --danger: #b82f60;
+  --shadow: 0 26px 60px rgba(91, 21, 48, 0.08);
+  --radius-lg: 30px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --font-body: "Eastman", "Aptos", "Segoe UI", sans-serif;
+  --font-display: "Playfair Display", "Georgia", serif;
+  --font-numeric: "Aptos", "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.56;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.94), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 214, 233, 0.72), transparent 22%),
+    linear-gradient(180deg, rgba(255, 248, 252, 0.98) 0%, rgba(255, 237, 246, 1) 100%);
+}
+
+body,
+button,
+input,
+textarea,
+select,
+.tab-button,
+.subtab-button,
+.hero-chip,
+.meta-pill,
+.status-pill,
+.selection-chip,
+.message {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+.admin-hero h1,
+.toolbar h2,
+.panel-head h3,
+.auth-panel h2,
+.summary-card strong,
+.content-card h4 {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+#categoryCount,
+#productCount,
+#bannerCount,
+#activeProductCount,
+.summary-card strong,
+.price-mark,
+.meta-pill,
+.status-pill,
+.selection-option strong {
+  font-family: var(--font-numeric);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.admin-shell {
+  padding-top: 36px;
+}
+
+.admin-hero h1 {
+  max-width: 12ch;
+}
+
+.hero-copy,
+.section-copy,
+.content-card p,
+.entity-card p,
+.product-card p,
+.banner-admin-content p {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.hero-chip,
+.meta-pill,
+.status-pill,
+.selection-chip {
+  background: rgba(141, 40, 71, 0.08);
+  border-color: rgba(141, 40, 71, 0.1);
+  color: var(--text);
+}
+
+.status-pill,
+.meta-pill {
+  font-weight: 700;
+}
+
+.panel,
+.summary-card,
+.entity-card,
+.product-card,
+.banner-admin-card,
+.content-card,
+.auth-panel {
+  background: var(--panel);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.panel:hover,
+.summary-card:hover,
+.entity-card:hover,
+.product-card:hover,
+.banner-admin-card:hover,
+.content-card:hover {
+  box-shadow: 0 30px 62px rgba(91, 21, 48, 0.1);
+}
+
+.tab-strip {
+  background: rgba(255, 248, 252, 0.78);
+}
+
+.tab-button,
+.subtab-button {
+  background: rgba(141, 40, 71, 0.08);
+  color: var(--primary-strong);
+  font-weight: 600;
+}
+
+.tab-button.active,
+.subtab-button.active,
+.primary-button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+  color: #fff8fb;
+  box-shadow: 0 18px 30px rgba(91, 21, 48, 0.18);
+}
+
+.secondary-button {
+  background: rgba(141, 40, 71, 0.1);
+  color: var(--primary-strong);
+  font-weight: 600;
+}
+
+.ghost-button {
+  border-color: rgba(64, 12, 25, 0.14);
+  color: var(--muted);
+}
+
+input,
+select,
+textarea {
+  border-color: rgba(64, 12, 25, 0.14);
+  background: var(--panel-strong);
+  color: var(--text);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(141, 40, 71, 0.42);
+  box-shadow: 0 0 0 4px rgba(141, 40, 71, 0.1);
+}
+
+.summary-card span,
+.field span,
+.compact-field span,
+.eyebrow,
+.panel-kicker,
+.config-note,
+.upload-path,
+.message {
+  color: var(--muted);
+}
+
+.banner-admin-image {
+  background: #ffe8f2;
+}
+
+.content-card,
+.entity-card,
+.product-card,
+.banner-admin-card {
+  background: rgba(255, 252, 254, 0.74);
+}
+
+.entity-card.active,
+.product-card.active,
+.banner-admin-card.active {
+  border-color: rgba(141, 40, 71, 0.24);
+  background: rgba(255, 243, 248, 0.95);
+}
+
+.message {
+  background: rgba(141, 40, 71, 0.08);
+  border: 1px solid rgba(141, 40, 71, 0.08);
+}
+
+.message.error {
+  background: rgba(184, 47, 96, 0.08);
+  border-color: rgba(184, 47, 96, 0.12);
+  color: var(--danger);
+}
+
+.message.is-success {
+  color: var(--primary-strong);
+  background: rgba(141, 40, 71, 0.08);
+  border-color: rgba(141, 40, 71, 0.12);
+}

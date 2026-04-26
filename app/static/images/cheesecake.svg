@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Cheesecake">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe8c7"/>
+      <stop offset="100%" stop-color="#ffcaa8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="36" fill="url(#bg)"/>
+  <ellipse cx="400" cy="392" rx="230" ry="34" fill="#d8966e" opacity="0.32"/>
+  <path d="M210 328h390l-40 78H250z" fill="#f4cb7d"/>
+  <path d="M210 328h390l-28-56H240z" fill="#ffe9bb"/>
+  <path d="M302 272h140l-26-42h-88z" fill="#ff7e73"/>
+  <path d="M470 272h110l-18-34h-86z" fill="#ff7e73"/>
+  <circle cx="350" cy="238" r="10" fill="#b84142"/>
+  <circle cx="390" cy="226" r="10" fill="#b84142"/>
+  <circle cx="528" cy="240" r="10" fill="#b84142"/>
+  <text x="400" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" font-weight="700" fill="#6f3922">CHEESECAKE</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Croissant">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe2b9"/>
+      <stop offset="100%" stop-color="#f8c39f"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="36" fill="url(#bg)"/>
+  <ellipse cx="400" cy="390" rx="220" ry="34" fill="#d28d62" opacity="0.3"/>
+  <path d="M220 282c0-84 72-150 160-150 60 0 112 30 140 76 13-4 26-6 40-6 78 0 140 60 140 136 0 50-26 96-67 120-16 9-31 12-51 12H322c-58 0-102-18-102-58 0-50 42-76 100-80z" fill="#d7904f"/>
+  <path d="M284 250c22-34 52-54 90-60" stroke="#c06f2f" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <path d="M374 200c26-3 48 3 70 16" stroke="#c06f2f" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M458 226c18 14 32 33 40 56" stroke="#c06f2f" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <text x="400" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#7b431f">CROISSANT</text>
+</svg>
