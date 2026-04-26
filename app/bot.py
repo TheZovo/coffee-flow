@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import logging
-
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, ReplyKeyboardRemove, WebAppInfo
@@ -14,7 +12,6 @@ from app.services.users import get_or_create_user_by_telegram
 
 customer_dp = Dispatcher()
 customer_bot = Bot(token=settings.TELEGRAM_BOT_TOKEN) if settings.TELEGRAM_BOT_TOKEN else None
-logger = logging.getLogger(__name__)
 
 
 def _name_from_message(message: Message) -> str | None:
@@ -54,44 +51,13 @@ def miniapp_keyboard(button_text: str | None = None) -> InlineKeyboardMarkup:
     )
 
 
-async def send_to_user(
-    chat_id: int,
-    text: str,
-    reply_markup: InlineKeyboardMarkup | None = None,
-) -> Message | None:
+async def send_to_user(chat_id: int, text: str, reply_markup: InlineKeyboardMarkup | None = None) -> None:
     if customer_bot is None:
-        logger.warning("Customer bot is not configured; cannot send message to chat_id=%s", chat_id)
-        return None
+        return
     try:
-        return await customer_bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
+        await customer_bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
     except Exception:
-        logger.exception("Failed to send customer message to chat_id=%s", chat_id)
-        return None
-
-
-async def edit_user_message(
-    chat_id: int,
-    message_id: int,
-    text: str,
-    reply_markup: InlineKeyboardMarkup | None = None,
-) -> Message | None:
-    if customer_bot is None:
-        logger.warning("Customer bot is not configured; cannot edit message for chat_id=%s", chat_id)
-        return None
-    try:
-        return await customer_bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text=text,
-            reply_markup=reply_markup,
-        )
-    except Exception:
-        logger.exception(
-            "Failed to edit customer message chat_id=%s message_id=%s",
-            chat_id,
-            message_id,
-        )
-        return None
+        return
 
 
 @customer_dp.message(CommandStart())

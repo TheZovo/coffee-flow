@@ -335,8 +335,6 @@ class Order(Base):
     loyalty_paid_coffee_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     loyalty_free_coffee_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     loyalty_reserved: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    customer_last_message_id: Mapped[int | None] = mapped_column(BigInteger)
-    customer_last_message_status: Mapped[str | None] = mapped_column(String(32))
 
     status: Mapped[OrderStatus] = mapped_column(
         SQLEnum(OrderStatus, native_enum=False, length=20, values_callable=_enum_values),

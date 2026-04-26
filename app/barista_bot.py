@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.bot import edit_user_message, send_to_user
+from app.bot import send_to_user
 from app.config import settings
 from app.database import SessionLocal
 from app.models import ConsumptionPlace, Order, OrderStatus, OrderType, User
@@ -335,47 +335,6 @@ def _customer_status_message(order: Order, app_settings) -> str:
     return render_text("ℹ️ Статус заказа №{order_number} обновлен: {status_label}.", **context)
 
 
-async def _save_customer_message_meta(order_id: int, message_id: int, status: str) -> None:
-    async with SessionLocal() as session:
-        order = await session.get(Order, order_id)
-        if order is None:
-            return
-        order.customer_last_message_id = message_id
-        order.customer_last_message_status = status
-        await session.commit()
-
-
-async def _notify_customer_status_update(order: Order, app_settings) -> None:
-    if order.user is None:
-        return
-
-    customer_text = _customer_status_message(order, app_settings)
-    if not customer_text:
-        return
-
-    if (
-        order.status == OrderStatus.COMPLETED
-        and order.customer_last_message_id is not None
-        and order.customer_last_message_status == OrderStatus.READY.value
-    ):
-        edited_message = await edit_user_message(
-            order.user.telegram_id,
-            order.customer_last_message_id,
-            customer_text,
-        )
-        if edited_message is not None:
-            await _save_customer_message_meta(
-                order.id,
-                order.customer_last_message_id,
-                OrderStatus.COMPLETED.value,
-            )
-            return
-
-    sent_message = await send_to_user(order.user.telegram_id, customer_text)
-    if sent_message is not None:
-        await _save_customer_message_meta(order.id, sent_message.message_id, order.status.value)
-
-
 async def send_to_baristas(text: str, order_id: int | None = None) -> None:
     if barista_bot is None:
         return
@@ -657,7 +616,7 @@ async def order_callback(callback: CallbackQuery) -> None:
             pass
 
     if refreshed_order.user is not None:
-        await _notify_customer_status_update(refreshed_order, app_settings)
+        await send_to_user(refreshed_order.user.telegram_id, _customer_status_message(refreshed_order, app_settings))
 
     await callback.answer(
         render_text(

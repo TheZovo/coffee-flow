@@ -722,16 +722,11 @@ async def create_order(
         order_id=created_order.id,
     )
     if created_order.user is not None:
-        customer_message = await send_to_user(
+        await send_to_user(
             created_order.user.telegram_id,
             render_text(app_settings.customer_order_created_text, **order_context),
             reply_markup=miniapp_keyboard(app_settings.miniapp_button_text),
         )
-        if customer_message is not None:
-            created_order.customer_last_message_id = customer_message.message_id
-            created_order.customer_last_message_status = "created"
-            await db.commit()
-            await db.refresh(created_order)
     return _serialize_order(created_order)
 
 
